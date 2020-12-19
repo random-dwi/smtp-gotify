@@ -13,6 +13,7 @@ checksum:
 dockers:
   - image_templates:
       - "randomdwi/smtp-gotify:{{ .Version }}-amd64"
+      - "randomdwi/smtp-gotify:latest-amd64"
     binaries:
       - smtp-gotify
     dockerfile: Dockerfile
@@ -21,6 +22,7 @@ dockers:
       - "ARCH=amd64"
   - image_templates:
       - "randomdwi/smtp-gotify:{{ .Version }}-arm64v8"
+      - "randomdwi/smtp-gotify:latest-arm64v8"
     binaries:
       - smtp-gotify
     goarch: arm64
