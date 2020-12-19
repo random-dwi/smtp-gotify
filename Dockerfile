@@ -1,33 +1,16 @@
-FROM golang:1.13-alpine3.10 AS builder
+ARG ARCH
 
-RUN apk add --no-cache git ca-certificates
+FROM alpine:latest as certs
+RUN apk --update --no-cache add ca-certificates && update-ca-certificates
 
-WORKDIR /app
+FROM ${ARCH}/alpine
 
-COPY . .
-
-# The image should be built with
-# --build-arg SG_VERSION=`git describe --tags --always`
-ARG SG_VERSION
-RUN if [ ! -z "$SG_VERSION" ]; then sed -i "s/UNKNOWN_RELEASE/${SG_VERSION}/g" smtp-gotify.go; fi
-
-RUN CGO_ENABLED=0 GOOS=linux go build \
-        -ldflags "-s -w" \
-        -a -o smtp-gotify
-
-
-
-
-
-FROM alpine:3.10
-
-RUN apk add --no-cache ca-certificates
-
-COPY --from=builder /app/smtp-gotify /smtp-gotify
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY smtp-gotify /usr/bin/smtp-gotify
 
 USER daemon
 
 ENV SG_SMTP_LISTEN "0.0.0.0:2525"
 EXPOSE 2525
 
-ENTRYPOINT ["/smtp-gotify"]
+ENTRYPOINT ["/usr/bin/smtp-gotify"]

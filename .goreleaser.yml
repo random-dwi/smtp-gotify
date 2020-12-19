@@ -1,0 +1,30 @@
+before:
+  hooks:
+    - go mod download
+builds:
+- env:
+  - CGO_ENABLED=0
+  binary: smtp-gotify
+  goarch:
+      - amd64
+      - arm64
+checksum:
+  name_template: 'checksums.txt'
+dockers:
+  - image_templates:
+      - "randomdwi/smtp-gotify:{{ .Version }}-amd64"
+    binaries:
+      - smtp-gotify
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--build-arg"
+      - "ARCH=amd64"
+  - image_templates:
+      - "randomdwi/smtp-gotify:{{ .Version }}-arm64v8"
+    binaries:
+      - smtp-gotify
+    goarch: arm64
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--build-arg"
+      - "ARCH=arm64v8"

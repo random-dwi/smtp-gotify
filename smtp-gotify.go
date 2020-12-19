@@ -19,6 +19,10 @@ import (
 	"time"
 )
 
+var version string
+var commit string
+var date string
+
 type SmtpConfig struct {
 	smtpListen      string
 	smtpPrimaryHost string
@@ -45,7 +49,7 @@ func main() {
 	app.Name = "smtp-gotify"
 	app.Usage = "A small program which listens for SMTP and sends " +
 		"all incoming Email messages to your Gotify server."
-	app.Version = "UNKNOWN_RELEASE"
+	app.Version = fmt.Sprintf("%s (commit: %s build-ts: %s)", version, commit, date)
 	app.Action = func(c *cli.Context) error {
 		// Required flags are not supported, see https://github.com/urfave/cli/issues/85
 		if !c.IsSet("gotify-url") {
